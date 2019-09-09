@@ -1,13 +1,6 @@
-# Sample Snack app
+# Quiz App
 
-Welcome to Expo!
+A very simple quiz app. Each question has 4 possible responses. When a user presses one of the options, it is marked either right or wrong and a progress bar at the bottom updates its ratio of blue to red to reflect the player's score. 
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by clicking the **Run** button or use the simulator by clicking **Tap to Play**. When you're done, click **Save** and share the link!
+Users can also add their own questions with responses. 
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Export** your project and use it with [expo-cli](https://docs.expo.io/versions/latest/introduction/installation.html).
-
-Projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the **Embed** button.
-
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io).
-
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack-web).
