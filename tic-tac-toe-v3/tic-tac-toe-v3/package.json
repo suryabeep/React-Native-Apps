@@ -1,0 +1,17 @@
+{
+  "name": "tic-tac-toe-v3",
+  "version": "0.0.0",
+  "description": "No description",
+  "author": null,
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "dependencies": {
+    "expo": "^31.0.0",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react-native-paper": "2.1.3",
+    "react-navigation": "2.18.2",
+    "react-redux": "5.1.1",
+    "redux": "4.0.1"
+  }
+}
