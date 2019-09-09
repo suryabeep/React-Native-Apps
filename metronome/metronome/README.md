@@ -1,13 +1,11 @@
-# Sample Snack app
+# Metronome
 
-Welcome to Expo!
+A minimalist metronome for musicians. 
+Designed for use during practice sessions: can be used with simple and intuitive gestures.
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by clicking the **Run** button or use the simulator by clicking **Tap to Play**. When you're done, click **Save** and share the link!
+Tap on any element ('numerator/denominator' of time signature, bpm, mute percentage) to edit it. Swipe up or down to increase or decrease the value of the active element. When editing bpm, longer swipes result in larger changes in bpm; so when you get close to your desired bpm you can make small swipes to have precise control.
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Export** your project and use it with [expo-cli](https://docs.expo.io/versions/latest/introduction/installation.html).
+Mute percentage is a feature borrowed from Avi Bortnik's 'Time Guru' app. It randomly mutes a certain percentage of metronome clicks to force the musician to get better at timing beats. As mute percentage gets higher, i.e less sound is played, the words 'mute percentage' get brighter.
 
-Projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the **Embed** button.
-
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io).
-
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack-web).
+Current design does not allow for on-time clicks because sounds in react native are asynchronous (not good for time-based apps!). This can be rectified using a web-based sound package - this is one important thing to fix.
+Removing this async sound function also fixes the problem of 'double' swipes when editing. 
