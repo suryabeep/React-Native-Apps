@@ -12,27 +12,23 @@ export default class App extends React.Component {
   };
 
   state = {
-    a: [false, false, false, false, false],
-    b: [false, false, false, false, false],
-    c: [false, false, false, false, false],
+    a: ["avail", "avail", "avail", "avail", "avail"],
+    b: ["avail", "avail", "avail", "avail", "avail"],
+    c: ["avail", "avail", "avail", "avail", "avail"],
     player: 1,
-    numCirclesSelected: 0,
     currentHeap: "",
-    aDead: [],
-    bDead:[],
-    cDead:[],
-    selected: [],
     modalVisible: false,
   }
 
   select = (index, heap) => {
     console.log("heap is: " + heap)
+    console.log("index is: " + index)
     currentHeap = this.state.currentHeap
-    selected = this.state.selected
-    console.log("selected is: " + selected)
-    console.log("selected length is: " + selected.length)
-    if (selected.length <= 3) {
-      if (selected.length == 0) {
+    //get the number of selected items
+    let selected = this.selected();
+    console.log("number of items selected is: " + selected)
+    if (selected <= 3) {
+      if (selected == 0) {
         currentHeap = heap
         this.setState({currentHeap: currentHeap})
       }
@@ -41,117 +37,141 @@ export default class App extends React.Component {
       }
       if (heap == "a" && currentHeap == "a") {
         toEdit = this.state.a
-        if (toEdit[index]) {
-          toEdit[index] = false
-          selected.pop()
-        } else if (selected.length < 3){
-          toEdit[index] = true
-          selected.push("a,"+index)
+        if (toEdit[index] == "selected") {
+          console.log('the item pressed was already selected, now unselecting.')
+          toEdit[index] = "avail"
+        } else if (selected < 3){
+          console.log('the item pressed was not selected, now selecting')
+          toEdit[index] = "selected"
         }
         this.setState({a: toEdit})
-        //this.setState({numCirclesSelected: this.state.numCirclesSelected + 1})
-        this.setState({selected: selected})
       } else if (heap == "b" && currentHeap == "b") {
         toEdit = this.state.b
-        if (toEdit[index]) {
-          toEdit[index] = false
-          selected.pop()
-        } else if (selected.length < 3){
-          toEdit[index] = true
-          selected.push("b,"+index)
+        if (toEdit[index] == "selected") {
+          toEdit[index] = "avail"
+        } else if (selected < 3){
+          toEdit[index] = "selected"
         }
         this.setState({b: toEdit})
-        //this.setState({numCirclesSelected: this.state.numCirclesSelected + 1})
-        this.setState({selected: selected})
       } else if (heap == "c" && currentHeap == "c") {
         toEdit = this.state.c
-        if (toEdit[index]) {
-          toEdit[index] = false
-          selected.pop()
-        } else if (selected.length < 3){
-          toEdit[index] = true
-          selected.push("c,"+index)
+        if (toEdit[index] == "selected") {
+          toEdit[index] = "avail"
+        } else if (selected < 3){
+          toEdit[index] = "selected"
         }
         this.setState({c: toEdit})
-        //this.setState({numCirclesSelected: this.state.numCirclesSelected + 1})
-        this.setState({selected: selected})
       }
     } else {
       Alert.alert("You can't select more than 3 circles to remove at a time.")
     }
+    console.log("a is: " + this.state.a)
+    console.log("b is: " + this.state.b)
+    console.log("c is: " + this.state.c)
   }
 
   submit = () => {
-    selected = this.state.selected
-    if (selected.length == 0) {
+    selected = this.selected()
+    if (selected == 0) {
       Alert.alert("You must select items to remove.")
       return;
     }
-    heap = selected[0].split(",")[0]
+    heap = this.state.currentHeap
     if (heap == "a") {
       a = this.state.a
-      aDead = this.state.aDead
-      for (let i = 0; i < selected.length; i++) {
-        aDead.push(i)
-        a.pop()
-      }
-      //deselect everything in a
       for (let i = 0; i < a.length; i++) {
-        a[i] = false;
+        if (a[i] == 'selected') {
+          a[i] = 'dead'
+        }
       }
-      this.setState({aDead, a})
+      this.setState({a})
     } else if (heap == "b") {
       b = this.state.b
-      bDead = this.state.bDead
-      for (let i = 0; i < selected.length; i++) {
-        bDead.push(i)
-        b.pop()
-      }
-      //deselect everything in b
       for (let i = 0; i < b.length; i++) {
-        b[i] = false;
+        if (b[i] == 'selected') {
+          b[i] = 'dead'
+        }
       }
-      this.setState({bDead, b})
+      this.setState({b})
     } else if (heap == "c") {
       c= this.state.c
-      cDead = this.state.cDead
-      for (let i = 0; i < selected.length; i++) {
-        cDead.push(i)
-        c.pop()
-      }
-      //deselect everything in c
       for (let i = 0; i < c.length; i++) {
-        c[i] = false;
+        if (c[i] == 'selected') {
+          c[i] = 'dead'
+        }
       }
-      this.setState({cDead, c})
+      this.setState({c})
     }
+    console.log("pressed submit.")
+    console.log("a is: " + this.state.a)
+    console.log("b is: " + this.state.b)
+    console.log("c is: " + this.state.c)
     this.checkWin();
     this.setState({player: -1 * this.state.player});
     this.setState({currentHeap: ""})
-    this.setState({selected: [], numCirclesSelected: 0})
+  }
+
+  selected = () => {
+    currentHeap = this.state.currentHeap
+    a = this.state.a
+    b = this.state.b
+    c = this.state.c
+    //get the number of selected items
+    let selected = 0;
+    if (currentHeap == "a"){
+      for (let i = 0; i < a.length; i++) {
+        if (a[i] == "selected") {
+          selected ++;
+        }
+      }
+    } else if (currentHeap == 'b') {
+      for (let i = 0; i < a.length; i++) {
+        if (b[i] == "selected") {
+          selected ++;
+        }
+      }
+    } for (let i = 0; i < a.length; i++) {
+      if (c[i] == "selected") {
+        selected ++;
+      }
+    }
+    return selected
   }
 
   checkWin = () => {
-    if (this.state.aDead.length == 5 && this.state.bDead.length == 5
-      && this.state.cDead.length == 5) {
-        winner = this.state.player > 0 ? "Player Red" : "Player Blue"
-        Alert.alert("Game over! " + winner + " won!")
-        this.reset()
+    //loop through all arrays and check if they're all dead
+    let avail = false;
+    for (let i = 0; i < this.state.a.length; i ++){
+      if (this.state.a[i] != 'dead') {
+        avail = true
+      }
+    }
+    for (let i = 0; i < this.state.b.length; i ++){
+      if (this.state.b[i] != 'dead') {
+        avail = true
+      }
+    }
+    for (let i = 0; i < this.state.c.length; i ++){
+      if (this.state.c[i] != 'dead') {
+        avail = true
+      }
+    }
+    //if nothing is available to play, ie everything is dead
+    if (!avail) {
+      winner = this.state.player > 0 ? "Player Red" : "Player Blue"
+      Alert.alert("Game over! " + winner + " won!")
+      this.reset()
     }
   }
 
   reset = () => {
     this.setState({
-      a: [false, false, false, false, false],
-      b: [false, false, false, false, false],
-      c: [false, false, false, false, false],
+      a: ["avail", "avail", "avail", "avail", "avail"],
+      b: ["avail", "avail", "avail", "avail", "avail"],
+      c: ["avail", "avail", "avail", "avail", "avail"],
       player: 1,
-      numCirclesSelected: 0,
       currentHeap: "",
-      aDead: [],
-      bDead:[],
-      cDead:[],
-      selected: [],
+      modalVisible: false,
     })
   }
 
@@ -200,36 +220,29 @@ export default class App extends React.Component {
             : <Text style = {styles.text}>Submit Move</Text>
           }
           </TouchableOpacity>
-          <View style=
-            {this.state.player > 1
-              ? styles.board
-              : [styles.board, {transform: [{rotate: '-180deg'}]}]
-          }>
+          <View style = {styles.board}>
             <View style={styles.heap}>
               {this.state.a.map((tapped, index) => (
-                <TouchableOpacity style={a[index]? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
-                  key = {index} onPress = {() => {this.select(index, "a")}}/>
-              ))}
-              {this.state.aDead.map((index) => (
-                <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"aDead"+index}/>
+                tapped != 'dead'
+                  ? <TouchableOpacity style={tapped == "selected"? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
+                    key = {index} onPress = {() => {this.select(index, "a")}}/>
+                  : <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"aDead"+index}/>
               ))}
             </View>
             <View style={styles.heap}>
               {this.state.b.map((tapped, index) => (
-                <TouchableOpacity style={b[index]? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
-                  key = {index} onPress = {() => {this.select(index, "b")}}/>
-              ))}
-              {this.state.bDead.map((index) => (
-                <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"bDead"+index}/>
+                tapped != 'dead'
+                  ? <TouchableOpacity style={tapped == "selected"? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
+                    key = {index} onPress = {() => {this.select(index, "b")}}/>
+                  : <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"bDead"+index}/>
               ))}
             </View>
             <View style={styles.heap}>
               {this.state.c.map((tapped, index) => (
-                <TouchableOpacity style={c[index]? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
-                  key = {index} onPress = {() => {this.select(index, "c")}}/>
-              ))}
-              {this.state.cDead.map((index) => (
-                <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"cDead"+index}/>
+                tapped != 'dead'
+                  ? <TouchableOpacity style={tapped == 'selected'? [styles.circle, {backgroundColor: "rgb(225,225,225)"}] : styles.circle}
+                    key = {index} onPress = {() => {this.select(index, "c")}}/>
+                  : <View style = {[styles.circle, {backgroundColor: "black", borderColor: "black"}]} key = {"cDead"+index}/>
               ))}
             </View>
           </View>
