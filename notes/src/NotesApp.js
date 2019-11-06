@@ -63,19 +63,19 @@ export default class NotesApp extends React.Component{
     }
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" backgroundColor="rgb(32,32,32)"/>
 
         <Modal style = {styles.modal} animationType="slide" transparent={true} visible={this.state.modalVisible}>
           <View style={styles.modal}>
             <View style = {{flex: 2, flexDirection: 'row', justifyContent: 'space-between', padding: 5, width: "100%"}}>
-              <TouchableOpacity style = {{flex: 1, padding: 10,}} onPress={this.closeModal}>
-                <Ionicons name='ios-close-circle-outline' size={50} style = {{color: 'white'}}/>
+              <TouchableOpacity style = {{flex: 1, paddingTop: 10, paddingLeft: 10}} onPress={this.closeModal}>
+                <Ionicons name='ios-close-circle-outline' size={height/16} style = {{color: 'white'}}/>
               </TouchableOpacity>
-              <TouchableOpacity style = {{flex: 1, padding: 10, alignItems: 'flex-end'}} onPress={this.doneEditing}>
-                <Ionicons name='ios-checkmark-circle-outline' size={50} style = {{color: 'white'}}/>
+              <TouchableOpacity style = {{flex: 1, paddingTop: 10, paddingRight: 10, alignItems: 'flex-end'}} onPress={this.doneEditing}>
+                <Ionicons name='ios-checkmark-circle-outline' size={height/16} style = {{color: 'white'}}/>
               </TouchableOpacity>
             </View>
-            <View style = {{borderBottomWidth: 1, borderBottomColor:'white', width: "100%", height: 10}}/>
+            <View style = {{borderBottomWidth: 1, borderBottomColor:'white', width: "100%", height: 5}}/>
             <View style = {{flex:20, width: width, alignItems: 'flex-start', justifyContent:'flex-start', padding: 10}}>
               <TextInput
                 placeholder = {this.state.modalText}
