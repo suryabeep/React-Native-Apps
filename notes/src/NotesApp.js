@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, StatusBar, TextInput, ScrollView} from 'react-native';
 import Constants from 'expo-constants'
 import {Ionicons} from '@expo/vector-icons'
-import {connect} from 'react-redux'
 
 const {height, width} = Dimensions.get('window');
 let characterCutoffLimit = 40
@@ -19,31 +18,45 @@ export default class NotesApp extends React.Component{
   }
 
   openModal = (text, newOrEdit, index) => {
-    console.log("Open pressed")
     this.setState({modalVisible: true, storedText: text, newOrEdit, index})
   }
   closeModal = () => {
     this.setState({modalVisible: false})
   }
+  
+  //helper method for TextInput components
   changeText = (text) => {
     this.setState({storedText: text})
   }
+
+  /* Called when a user presses the 'checkmark' in the modal when
+    editing a note or adding a new note. */
   doneEditing = () => {
     let notes = [... this.state.notes]
+    //if the user got to the modal through a new note
     if (this.state.newOrEdit == 'new') {
       notes.push(this.state.storedText)
     }
+    //if the user got to the modal by editing a note
     else if (this.state.newOrEdit == 'edit' && this.state.index != -1) {
       notes.splice(this.state.index, 1, this.state.storedText)
     }
     this.setState({notes: notes, storedText: ""})
     this.closeModal()
   }
+
+  /* Called when user selects or deselects a radio button. 
+    Just flips the corresponding 'selected' boolean
+   */
   select = (index) => {
     let selectedButtons = [... this.state.selectedButtons]
     selectedButtons.splice(index, 1, !selectedButtons[index])
     this.setState({selectedButtons})
   }
+
+  /* Called when user presses the trash icon. Takes all the selected radio buttons
+    and removes the corresponding note fro the notes array
+   */
   confirmDelete = () => {
     notes = [... this.state.notes]
     for (let i = 0; i < this.state.selectedButtons.size; i++) {
@@ -56,6 +69,7 @@ export default class NotesApp extends React.Component{
   }
 
   render () {
+    // if the radio buttons are visible, then the text should cut off earlier to maintain one line per note
     if (this.state.selectVisible) {
       characterCutoffLimit = 30
     } else {
@@ -63,8 +77,11 @@ export default class NotesApp extends React.Component{
     }
     return (
       <View style={styles.container}>
+        {/* Make the status bar look nice */}
         <StatusBar barStyle="light-content" backgroundColor="rgb(32,32,32)"/>
 
+        {/* The Modal is for editing, viewing, and creating new notes. 
+            It gets around having to use redux for such a small app*/}
         <Modal style = {styles.modal} animationType="slide" transparent={true} visible={this.state.modalVisible}>
           <View style={styles.modal}>
             <View style = {{flex: 2, flexDirection: 'row', justifyContent: 'space-between', padding: 5, width: "100%"}}>
@@ -92,11 +109,15 @@ export default class NotesApp extends React.Component{
             </View>
           </View>
         </Modal>
-
+        
+        {/* This view contains the two buttons on the top of the screen
+            which change dynamically depending on if the user is in the
+            'select mode' or not*/}
         <View style = {styles.topContainer}>
           <TouchableOpacity onPress = {() => {this.setState({selectVisible: !this.state.selectVisible})}}>
             <Text style = {{fontSize: 24, color: "rgb(226,75,79)", fontFamily: 'HelveticaNeue'}}>Select</Text>  
-          </TouchableOpacity>     
+          </TouchableOpacity>    
+          {/* If in select mode, show a trash icon, otherwise show the new note icon */} 
           {this.state.selectVisbile
             ? <TouchableOpacity onPress={this.confirmDelete}>  
                 <Ionicons name = "ios-trash" size={36} style={{color: "rgb(226,75,79)"}}/>
@@ -106,10 +127,12 @@ export default class NotesApp extends React.Component{
               </TouchableOpacity>
           } 
         </View>
-
+        {/* Divider line */}
         <View style = {{borderBottomWidth: 1, borderBottomColor:'white', width: "100%"}}/>
         
+        {/* This view holds the radio buttons (if visible) and the notes */}
         <View style = {styles.bottomContainer}>
+          {/* Map the radio buttons to the appopriate location to the left of each note */}
           {this.state.selectVisible 
             ? <View style = {styles.selectContainer}>
               {this.state.selectedButtons.map((selected, index) => (
@@ -120,7 +143,7 @@ export default class NotesApp extends React.Component{
               </View>
             : <View />
           }
-          
+          {/* The view that actually holds the notes */}
           <View style = {styles.notesContainer}>
             {this.state.notes.map((text, index) => (
               <TouchableOpacity key = {index} onPress = {() => {this.openModal(text, "edit", index)}}>
