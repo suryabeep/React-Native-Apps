@@ -33,15 +33,17 @@ export default class NotesApp extends React.Component{
     editing a note or adding a new note. */
   doneEditing = () => {
     let notes = [... this.state.notes]
+    let buttons = [... this.state.selectedButtons]
     //if the user got to the modal through a new note
     if (this.state.newOrEdit == 'new') {
       notes.push(this.state.storedText)
+      buttons.push(false)
     }
     //if the user got to the modal by editing a note
     else if (this.state.newOrEdit == 'edit' && this.state.index != -1) {
       notes.splice(this.state.index, 1, this.state.storedText)
     }
-    this.setState({notes: notes, storedText: ""})
+    this.setState({notes: notes, storedText: "", selectedButtons: buttons})
     this.closeModal()
   }
 
@@ -58,14 +60,27 @@ export default class NotesApp extends React.Component{
     and removes the corresponding note fro the notes array
    */
   confirmDelete = () => {
-    notes = [... this.state.notes]
-    for (let i = 0; i < this.state.selectedButtons.size; i++) {
-      if (this.state.selectedButtons[i]) {
-        notes.splice(i, 1)
+    let n = [... this.state.notes]
+    let selectedButtons = [... this.state.selectedButtons]
+    let pp = []
+    for (let i = 0; i < selectedButtons.length; i++) {
+      if (selectedButtons[i]) {
+        n.splice(i, 1)
+      } else {
+        pp.push(false)
       }
     }
-    this.setState({notes, selectVisbile: false})
-    alert("You confirmed the delete action.")
+    this.setState({notes: n, selectedButtons: pp, selectVisible: false})
+  }
+
+  changeSelectVisibility = () => {
+    let s = [... this.state.selectedButtons]
+    if (this.state.selectVisible) {
+      for (let i = 0; i < s.length; i++) {
+        s[i] = false
+      }
+    }
+    this.setState({selectVisible: !this.state.selectVisible, selectedButtons: s})
   }
 
   render () {
@@ -114,11 +129,11 @@ export default class NotesApp extends React.Component{
             which change dynamically depending on if the user is in the
             'select mode' or not*/}
         <View style = {styles.topContainer}>
-          <TouchableOpacity onPress = {() => {this.setState({selectVisible: !this.state.selectVisible})}}>
+          <TouchableOpacity onPress = {this.changeSelectVisibility}>
             <Text style = {{fontSize: 24, color: "rgb(226,75,79)", fontFamily: 'HelveticaNeue'}}>Select</Text>  
           </TouchableOpacity>    
           {/* If in select mode, show a trash icon, otherwise show the new note icon */} 
-          {this.state.selectVisbile
+          {this.state.selectVisible
             ? <TouchableOpacity onPress={this.confirmDelete}>  
                 <Ionicons name = "ios-trash" size={36} style={{color: "rgb(226,75,79)"}}/>
               </TouchableOpacity>
@@ -131,7 +146,7 @@ export default class NotesApp extends React.Component{
         <View style = {{borderBottomWidth: 1, borderBottomColor:'white', width: "100%"}}/>
         
         {/* This view holds the radio buttons (if visible) and the notes */}
-        <View style = {styles.bottomContainer}>
+        <ScrollView contentContainerStyle = {styles.bottomContainer}>
           {/* Map the radio buttons to the appopriate location to the left of each note */}
           {this.state.selectVisible 
             ? <View style = {styles.selectContainer}>
@@ -147,6 +162,7 @@ export default class NotesApp extends React.Component{
           <View style = {styles.notesContainer}>
             {this.state.notes.map((text, index) => (
               <TouchableOpacity key = {index} onPress = {() => {this.openModal(text, "edit", index)}}>
+                
                 <Text style = {styles.text}> 
                   {(text.length > characterCutoffLimit)
                     ? text.substring(0, characterCutoffLimit) + "..." 
@@ -155,7 +171,7 @@ export default class NotesApp extends React.Component{
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        </ScrollView>
       </View>
     );
   }
